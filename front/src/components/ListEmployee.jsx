@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import EmployeeService from '../services/EmployeeService';
 
 class ListEmployee extends Component {
     constructor(props) {
@@ -9,7 +10,11 @@ class ListEmployee extends Component {
         }
     }
     
-    
+    componentDidMount() { // dobro za koristiti za axios pozive jer se poziva prilikom rendera komponente ("componentDidMount")
+        EmployeeService.getEmployees().then((res) => {
+            this.setState({ employees: res.data });
+        });
+    }    
     render() {
         return (
             <div>

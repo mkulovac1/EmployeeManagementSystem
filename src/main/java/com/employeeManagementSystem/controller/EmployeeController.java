@@ -1,12 +1,11 @@
 package com.employeeManagementSystem.controller;
 
+import com.employeeManagementSystem.exception.ResourceNotFoundException;
 import com.employeeManagementSystem.model.Employee;
 import com.employeeManagementSystem.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +20,18 @@ public class EmployeeController {
     @GetMapping("/employees") // kad ukuca ovaj url, trigga se metoda getAllEmployees
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll(); // ugradjene metode jer EmployeeRepository nasljedjuje JpaRepository
+    }
+
+    // rest api za kreiranje uposlenika:
+    @PostMapping("/employees")
+    public Employee createEmployee(@RequestBody Employee employee) {
+        return employeeRepository.save(employee); // integrisana metoda
+    }
+
+    // daj zaposlenika preko id-a:
+    @GetMapping("/employees/{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+        Employee e = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee not exist with particular id: " + id));
+        return ResponseEntity.ok(e);
     }
 }
